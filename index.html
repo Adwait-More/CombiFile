@@ -11,167 +11,248 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
         body {
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0e0e0e;
+            background: #0a0a0a;
             color: #d4d4d4;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             user-select: none;
         }
 
-        .app {
-            width: 580px;
-            background: #161616;
-            border: 1px solid #252525;
-            border-radius: 8px;
-            padding: 20px 22px;
+        /* ═══════════════════════════════════════════════════════════
+           SIDEBAR
+           ═══════════════════════════════════════════════════════════ */
+        .sidebar {
+            width: 272px;
+            min-width: 272px;
+            height: 100vh;
+            background: #111111;
+            border-right: 1px solid #1e1e1e;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 18px;
+            gap: 6px;
+            overflow-y: auto;
         }
 
-        .app-title {
-            font-size: 15px;
-            font-weight: 600;
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 700;
             color: #e8e8e8;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             letter-spacing: 0.3px;
         }
 
-        .app-title span {
+        .sidebar-title span {
             color: #6b9cad;
         }
 
-        /* ── buttons ─────────────────────────────────────────────── */
-        .btn-row {
+        .sidebar-section {
+            margin-top: 10px;
+            margin-bottom: 2px;
+        }
+
+        .sidebar-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: #444444;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        /* ── sidebar buttons ─────────────────────────────────────── */
+        .sidebar-btn-row {
             display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        button {
-            height: 34px;
-            background: #1e1e1e;
-            color: #c0c0c0;
-            border: 1px solid #2e2e2e;
-            border-radius: 5px;
-            font-size: 13px;
-            font-family: inherit;
-            cursor: pointer;
-            transition: background 0.15s, border-color 0.15s;
-            padding: 0 14px;
-        }
-
-        button:hover {
-            background: #282828;
-            border-color: #3a3a3a;
-        }
-
-        .btn-grow { flex: 1; }
-
-        .btn-dim {
-            color: #666666;
-        }
-
-        .btn-accent {
-            background: #1a2a30;
-            border-color: #2d4a55;
-            color: #8ec3d4;
-        }
-
-        .btn-accent:hover {
-            background: #223840;
-            border-color: #3a6070;
-        }
-
-        .btn-full {
-            width: 100%;
-            margin-top: 12px;
-        }
-
-        /* ── toolbar (sort + filter) ─────────────────────────────── */
-        .toolbar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-            align-items: center;
-        }
-
-        .toolbar-group {
-            display: flex;
-            align-items: center;
             gap: 6px;
         }
 
-        .toolbar-label {
-            font-size: 11px;
-            color: #555555;
-            white-space: nowrap;
+        .sidebar button, .sidebar .s-btn {
+            height: 32px;
+            width: 100%;
+            background: #1a1a1a;
+            color: #b0b0b0;
+            border: 1px solid #252525;
+            border-radius: 5px;
+            font-size: 12px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+            padding: 0 12px;
+            text-align: center;
         }
 
-        select {
-            height: 28px;
-            background: #1a1a1a;
-            color: #aaaaaa;
-            border: 1px solid #2e2e2e;
-            border-radius: 4px;
-            font-size: 11px;
+        .sidebar button:hover {
+            background: #222222;
+            border-color: #333333;
+        }
+
+        .sidebar .btn-dim {
+            color: #666666;
+        }
+
+        .sidebar .btn-accent {
+            background: #152228;
+            border-color: #2a4a56;
+            color: #8ec3d4;
+            font-weight: 600;
+            height: 36px;
+            font-size: 13px;
+        }
+
+        .sidebar .btn-accent:hover {
+            background: #1c3040;
+            border-color: #3a6575;
+        }
+
+        /* ── sidebar inputs ──────────────────────────────────────── */
+        .s-input {
+            height: 32px;
+            width: 100%;
+            background: #141414;
+            color: #cccccc;
+            border: 1px solid #252525;
+            border-radius: 5px;
+            font-size: 12px;
             font-family: inherit;
-            padding: 0 6px;
+            padding: 0 10px;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .s-input:focus {
+            border-color: #4a7a8a;
+        }
+
+        .s-input::placeholder {
+            color: #3a3a3a;
+        }
+
+        .s-select {
+            height: 32px;
+            width: 100%;
+            background: #141414;
+            color: #aaaaaa;
+            border: 1px solid #252525;
+            border-radius: 5px;
+            font-size: 12px;
+            font-family: inherit;
+            padding: 0 8px;
             cursor: pointer;
             outline: none;
         }
 
-        select:hover, select:focus {
-            border-color: #3a3a3a;
+        .s-select:hover, .s-select:focus {
+            border-color: #333333;
         }
 
-        .filter-input {
-            height: 28px;
+        .input-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .input-row .s-input {
             flex: 1;
-            background: #1a1a1a;
-            color: #cccccc;
-            border: 1px solid #2e2e2e;
-            border-radius: 4px;
-            font-size: 11px;
-            font-family: inherit;
-            padding: 0 8px;
-            outline: none;
             min-width: 0;
         }
 
-        .filter-input:focus {
-            border-color: #4a7a8a;
-        }
-
-        .filter-input::placeholder {
-            color: #444444;
-        }
-
-        .btn-filter {
-            height: 28px;
-            font-size: 11px;
+        .input-row button {
+            width: auto;
+            flex-shrink: 0;
             padding: 0 10px;
+            font-size: 11px;
             color: #6b9cad;
-            background: #161e22;
-            border-color: #2a3a40;
-            white-space: nowrap;
+            background: #131c20;
+            border-color: #253035;
         }
 
-        .btn-filter:hover {
-            background: #1e2a30;
+        .input-row button:hover {
+            background: #1a2a30;
             border-color: #3a5560;
         }
 
+        .sidebar-divider {
+            height: 1px;
+            background: #1e1e1e;
+            margin: 8px 0;
+        }
+
+        .sidebar-spacer {
+            flex: 1;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           MAIN CONTENT
+           ═══════════════════════════════════════════════════════════ */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            min-width: 0;
+        }
+
+        /* ── header bar ──────────────────────────────────────────── */
+        .main-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-bottom: 1px solid #1a1a1a;
+            background: #0d0d0d;
+            flex-shrink: 0;
+        }
+
+        .main-header-title {
+            font-size: 13px;
+            color: #555555;
+        }
+
+        .main-header-title b {
+            color: #999999;
+            font-weight: 600;
+        }
+
+        .main-header-count {
+            font-size: 12px;
+            color: #444444;
+        }
+
+        /* ── file list columns header ────────────────────────────── */
+        .list-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px;
+            height: 36px;
+            border-bottom: 1px solid #1a1a1a;
+            background: #0c0c0c;
+            flex-shrink: 0;
+        }
+
+        .list-header span {
+            font-size: 10px;
+            font-weight: 600;
+            color: #3a3a3a;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .lh-check { width: 20px; }
+        .lh-name  { flex: 1; }
+        .lh-ext   { width: 70px; text-align: center; }
+        .lh-remove { width: 28px; }
+
         /* ── file list ───────────────────────────────────────────── */
         .file-list {
-            width: 100%;
-            height: 280px;
-            background: #121212;
-            border: 1px solid #252525;
-            border-radius: 6px;
+            flex: 1;
             overflow-y: auto;
-            margin-bottom: 8px;
+            background: #0a0a0a;
         }
 
         .file-list-empty {
@@ -179,31 +260,34 @@
             align-items: center;
             justify-content: center;
             height: 100%;
-            color: #2a2a2a;
-            font-size: 13px;
+            color: #222222;
+            font-size: 14px;
             pointer-events: none;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .file-list-empty-sub {
+            font-size: 11px;
+            color: #1a1a1a;
         }
 
         .file-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 0 12px;
-            height: 34px;
-            border-bottom: 1px solid #1a1a1a;
+            gap: 12px;
+            padding: 0 24px;
+            height: 40px;
+            border-bottom: 1px solid #111111;
             transition: background 0.1s;
         }
 
-        .file-item:last-child {
-            border-bottom: none;
-        }
-
         .file-item:hover {
-            background: #1a1e20;
+            background: #121618;
         }
 
         .file-item.unchecked {
-            opacity: 0.4;
+            opacity: 0.35;
         }
 
         .file-item.unchecked .file-name {
@@ -214,11 +298,11 @@
         .file-check {
             appearance: none;
             -webkit-appearance: none;
-            width: 15px;
-            height: 15px;
-            min-width: 15px;
+            width: 16px;
+            height: 16px;
+            min-width: 16px;
             background: #0e0e0e;
-            border: 1px solid #3a3a3a;
+            border: 1px solid #333333;
             border-radius: 3px;
             cursor: pointer;
             position: relative;
@@ -233,8 +317,8 @@
         .file-check:checked::after {
             content: "";
             position: absolute;
-            left: 3.5px;
-            top: 0.5px;
+            left: 4px;
+            top: 1px;
             width: 5px;
             height: 9px;
             border: solid #c0dde6;
@@ -245,7 +329,7 @@
         .file-name {
             flex: 1;
             font-family: Consolas, 'Courier New', monospace;
-            font-size: 12.5px;
+            font-size: 13px;
             color: #909090;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -253,10 +337,12 @@
         }
 
         .file-ext {
+            width: 70px;
+            text-align: center;
             font-size: 10px;
             color: #4a6a75;
-            background: #141e22;
-            padding: 1px 6px;
+            background: #101a1e;
+            padding: 2px 0;
             border-radius: 3px;
             font-family: Consolas, monospace;
         }
@@ -264,165 +350,174 @@
         .file-remove {
             background: none;
             border: none;
-            color: #333333;
-            font-size: 14px;
+            color: #282828;
+            font-size: 15px;
             cursor: pointer;
-            width: 22px;
-            height: 22px;
+            width: 28px;
+            height: 28px;
             flex: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 3px;
+            border-radius: 4px;
             transition: color 0.15s, background 0.15s;
             padding: 0;
         }
 
         .file-remove:hover {
             color: #aa5555;
-            background: #1e1618;
+            background: #1a1214;
         }
 
-        /* ── list controls ───────────────────────────────────────── */
-        .list-controls {
+        /* ── status bar ──────────────────────────────────────────── */
+        .status-bar {
             display: flex;
-            gap: 6px;
-            margin-bottom: 14px;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            height: 36px;
+            border-top: 1px solid #1a1a1a;
+            background: #0d0d0d;
+            flex-shrink: 0;
         }
 
-        .list-controls button {
-            height: 24px;
+        .status-text {
             font-size: 11px;
-            color: #555555;
-            background: transparent;
-            border: 1px solid #252525;
-            padding: 0 10px;
-        }
-
-        .list-controls button:hover {
-            color: #999999;
-            background: #1a1a1a;
-            border-color: #333333;
-        }
-
-        /* ── input ───────────────────────────────────────────────── */
-        .field-label {
-            font-size: 11px;
-            color: #666666;
-            margin-bottom: 3px;
-            padding-left: 2px;
-        }
-
-        .filename-input {
-            width: 100%;
-            height: 34px;
-            background: #121212;
-            color: #d4d4d4;
-            border: 1px solid #252525;
-            border-radius: 5px;
-            padding: 0 12px;
-            font-size: 13px;
-            font-family: inherit;
-            outline: none;
-            transition: border-color 0.15s;
-        }
-
-        .filename-input:focus {
-            border-color: #4a7a8a;
-        }
-
-        /* ── status ──────────────────────────────────────────────── */
-        .status {
-            font-size: 11px;
-            color: #555555;
-            margin-top: 8px;
-            padding-left: 2px;
-            height: 16px;
+            color: #444444;
             transition: color 0.2s;
         }
 
-        .status.success {
-            color: #6b9cad;
-        }
+        .status-text.success { color: #6b9cad; }
+        .status-text.error   { color: #aa6666; }
 
-        .status.error {
-            color: #aa6666;
+        .status-info {
+            font-size: 11px;
+            color: #333333;
         }
 
         /* ── scrollbar ───────────────────────────────────────────── */
-        .file-list::-webkit-scrollbar {
+        .file-list::-webkit-scrollbar,
+        .sidebar::-webkit-scrollbar {
             width: 6px;
         }
 
-        .file-list::-webkit-scrollbar-track {
+        .file-list::-webkit-scrollbar-track,
+        .sidebar::-webkit-scrollbar-track {
             background: transparent;
         }
 
-        .file-list::-webkit-scrollbar-thumb {
-            background: #252525;
+        .file-list::-webkit-scrollbar-thumb,
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #1e1e1e;
             border-radius: 3px;
         }
 
-        .file-list::-webkit-scrollbar-thumb:hover {
-            background: #353535;
+        .file-list::-webkit-scrollbar-thumb:hover,
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #2e2e2e;
         }
 
         #file-input { display: none; }
     </style>
 </head>
 <body>
-    <div class="app">
-        <div class="app-title">Combi<span>File</span></div>
 
-        <div class="btn-row">
-            <button id="btn-add" type="button" class="btn-grow">Add Files</button>
-            <button id="btn-clear" type="button" class="btn-grow btn-dim">Clear All</button>
+    <!-- ═══ SIDEBAR ═══ -->
+    <aside class="sidebar">
+        <div class="sidebar-title">Combi<span>File</span></div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-label">Files</div>
+        </div>
+        <button id="btn-add" type="button">+ Add Files</button>
+        <button id="btn-clear" type="button" class="btn-dim">Clear All</button>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-label">Sort</div>
+        </div>
+        <select id="sort-select" class="s-select">
+            <option value="none">As added</option>
+            <option value="name-asc">Name A → Z</option>
+            <option value="name-desc">Name Z → A</option>
+            <option value="ext">Extension</option>
+        </select>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-label">Select by name</div>
+        </div>
+        <div class="input-row">
+            <input type="text" class="s-input" id="filter-name" placeholder="e.g. config" spellcheck="false" />
+            <button type="button" id="btn-filter-name">Select</button>
         </div>
 
-        <!-- toolbar: sort + filter -->
-        <div class="toolbar">
-            <div class="toolbar-group">
-                <span class="toolbar-label">Sort</span>
-                <select id="sort-select">
-                    <option value="none">As added</option>
-                    <option value="name-asc">Name A → Z</option>
-                    <option value="name-desc">Name Z → A</option>
-                    <option value="ext">Extension</option>
-                </select>
-            </div>
-            <input
-                type="text"
-                class="filter-input"
-                id="filter-input"
-                placeholder="Type to select matching files..."
-                spellcheck="false"
-            />
-            <button type="button" class="btn-filter" id="btn-filter-apply">Select</button>
+        <div class="sidebar-section">
+            <div class="sidebar-label">Select by extension</div>
+        </div>
+        <div class="input-row">
+            <input type="text" class="s-input" id="filter-ext" placeholder="e.g. .cs" spellcheck="false" />
+            <button type="button" id="btn-filter-ext">Select</button>
         </div>
 
-        <div class="file-list" id="file-list">
-            <div class="file-list-empty" id="empty-msg">No files selected</div>
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-label">Selection</div>
+        </div>
+        <div class="sidebar-btn-row">
+            <button id="btn-check-all" type="button">All</button>
+            <button id="btn-uncheck-all" type="button">None</button>
+            <button id="btn-invert" type="button">Invert</button>
         </div>
 
-        <div class="list-controls">
-            <button id="btn-check-all" type="button">Check All</button>
-            <button id="btn-uncheck-all" type="button">Uncheck All</button>
-        </div>
+        <div class="sidebar-spacer"></div>
 
-        <div class="field-label">Output filename</div>
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-label">Output</div>
+        </div>
         <input
             type="text"
-            class="filename-input"
+            class="s-input"
             id="filename-input"
             value="combined_output.txt"
             spellcheck="false"
         />
+        <button id="btn-merge" type="button" class="btn-accent">Merge & Download</button>
+    </aside>
 
-        <button id="btn-merge" type="button" class="btn-full btn-accent">Merge</button>
-        <div class="status" id="status">Ready</div>
+    <!-- ═══ MAIN ═══ -->
+    <main class="main">
+        <div class="main-header">
+            <div class="main-header-title"><b>Files</b> — queued for merging</div>
+            <div class="main-header-count" id="header-count"></div>
+        </div>
 
-        <input type="file" id="file-input" multiple />
-    </div>
+        <div class="list-header">
+            <span class="lh-check"></span>
+            <span class="lh-name">Filename</span>
+            <span class="lh-ext">Type</span>
+            <span class="lh-remove"></span>
+        </div>
+
+        <div class="file-list" id="file-list">
+            <div class="file-list-empty" id="empty-msg">
+                No files added yet
+                <div class="file-list-empty-sub">Click "Add Files" in the sidebar to get started</div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-text" id="status">Ready</div>
+            <div class="status-info" id="status-info"></div>
+        </div>
+    </main>
+
+    <input type="file" id="file-input" multiple />
 
     <script>
         const fileInput     = document.getElementById("file-input");
@@ -430,24 +525,25 @@
         const emptyMsg      = document.getElementById("empty-msg");
         const filenameIn    = document.getElementById("filename-input");
         const statusEl      = document.getElementById("status");
+        const statusInfoEl  = document.getElementById("status-info");
+        const headerCountEl = document.getElementById("header-count");
         const btnAdd        = document.getElementById("btn-add");
         const btnClear      = document.getElementById("btn-clear");
         const btnMerge      = document.getElementById("btn-merge");
         const btnCheckAll   = document.getElementById("btn-check-all");
         const btnUncheckAll = document.getElementById("btn-uncheck-all");
+        const btnInvert     = document.getElementById("btn-invert");
         const sortSelect    = document.getElementById("sort-select");
-        const filterInput   = document.getElementById("filter-input");
-        const btnFilter     = document.getElementById("btn-filter-apply");
+        const filterName    = document.getElementById("filter-name");
+        const btnFilterName = document.getElementById("btn-filter-name");
+        const filterExt     = document.getElementById("filter-ext");
+        const btnFilterExt  = document.getElementById("btn-filter-ext");
 
-        /**
-         * Each entry: { id, file: File, checked: boolean }
-         */
         let entries    = [];
         let nextId     = 0;
         let resetTimer = null;
 
         // ── helpers ──────────────────────────────────────────────────
-
         function getExtension(name) {
             const dot = name.lastIndexOf(".");
             return dot > 0 ? name.slice(dot).toLowerCase() : "";
@@ -455,14 +551,21 @@
 
         function setStatus(text, type) {
             statusEl.textContent = text;
-            statusEl.className = "status" + (type ? " " + type : "");
+            statusEl.className = "status-text" + (type ? " " + type : "");
             if (resetTimer) clearTimeout(resetTimer);
             if (type === "success") {
                 resetTimer = setTimeout(() => {
                     statusEl.textContent = "Ready";
-                    statusEl.className = "status";
+                    statusEl.className = "status-text";
                 }, 3000);
             }
+        }
+
+        function updateCounts() {
+            const checked = entries.filter(e => e.checked).length;
+            const total   = entries.length;
+            headerCountEl.textContent = total > 0 ? `${checked} / ${total} selected` : "";
+            statusInfoEl.textContent = total > 0 ? `${total} file(s) total` : "";
         }
 
         function getSortedEntries() {
@@ -488,6 +591,7 @@
 
             if (entries.length === 0) {
                 emptyMsg.style.display = "flex";
+                updateCounts();
                 return;
             }
 
@@ -498,7 +602,6 @@
                 const row = document.createElement("div");
                 row.className = "file-item" + (entry.checked ? "" : " unchecked");
 
-                // checkbox
                 const cb = document.createElement("input");
                 cb.type = "checkbox";
                 cb.className = "file-check";
@@ -506,22 +609,19 @@
                 cb.addEventListener("change", () => {
                     entry.checked = cb.checked;
                     row.classList.toggle("unchecked", !cb.checked);
-                    updateStatus();
+                    updateCounts();
                 });
 
-                // filename
                 const name = document.createElement("span");
                 name.className = "file-name";
                 name.textContent = entry.file.name;
                 name.title = entry.file.name;
 
-                // extension badge
                 const ext = getExtension(entry.file.name);
                 const extBadge = document.createElement("span");
                 extBadge.className = "file-ext";
-                extBadge.textContent = ext || "—";
+                extBadge.textContent = ext || "\u2014";
 
-                // remove button
                 const rm = document.createElement("button");
                 rm.className = "file-remove";
                 rm.innerHTML = "&#x2715;";
@@ -529,7 +629,6 @@
                 rm.addEventListener("click", () => {
                     entries = entries.filter(e => e.id !== entry.id);
                     renderList();
-                    updateStatus();
                 });
 
                 row.appendChild(cb);
@@ -538,19 +637,11 @@
                 row.appendChild(rm);
                 fileListEl.appendChild(row);
             });
+
+            updateCounts();
         }
 
-        function updateStatus() {
-            const checked = entries.filter(e => e.checked).length;
-            const total   = entries.length;
-            if (total === 0) {
-                setStatus("Ready");
-            } else {
-                setStatus(`${checked} of ${total} file(s) checked`);
-            }
-        }
-
-        // ── add files (appends) ──────────────────────────────────────
+        // ── add files ────────────────────────────────────────────────
         btnAdd.addEventListener("click", () => fileInput.click());
 
         fileInput.addEventListener("change", () => {
@@ -559,57 +650,72 @@
                 entries.push({ id: nextId++, file: f, checked: true });
             }
             renderList();
-            updateStatus();
+            setStatus(`Added ${fileInput.files.length} file(s)`);
             fileInput.value = "";
         });
 
-        // ── clear all ────────────────────────────────────────────────
+        // ── clear ────────────────────────────────────────────────────
         btnClear.addEventListener("click", () => {
             entries = [];
             nextId  = 0;
-            filterInput.value = "";
+            filterName.value = "";
+            filterExt.value  = "";
             renderList();
             setStatus("Ready");
         });
 
-        // ── check / uncheck all ──────────────────────────────────────
+        // ── selection controls ───────────────────────────────────────
         btnCheckAll.addEventListener("click", () => {
             entries.forEach(e => e.checked = true);
             renderList();
-            updateStatus();
         });
 
         btnUncheckAll.addEventListener("click", () => {
             entries.forEach(e => e.checked = false);
             renderList();
-            updateStatus();
+        });
+
+        btnInvert.addEventListener("click", () => {
+            entries.forEach(e => e.checked = !e.checked);
+            renderList();
+            setStatus("Selection inverted");
         });
 
         // ── sort ─────────────────────────────────────────────────────
-        sortSelect.addEventListener("change", () => {
-            renderList();
-        });
+        sortSelect.addEventListener("change", renderList);
 
-        // ── filter / select matching ─────────────────────────────────
-        function applyFilter() {
-            const query = filterInput.value.trim().toLowerCase();
-            if (!query) return;
-
+        // ── filter by name ───────────────────────────────────────────
+        function applyNameFilter() {
+            const q = filterName.value.trim().toLowerCase();
+            if (!q) return;
             entries.forEach(e => {
-                e.checked = e.file.name.toLowerCase().includes(query);
+                e.checked = e.file.name.toLowerCase().includes(q);
             });
             renderList();
-
             const matched = entries.filter(e => e.checked).length;
-            setStatus(`Selected ${matched} file(s) matching "${filterInput.value.trim()}"`);
+            setStatus(`${matched} file(s) match "${filterName.value.trim()}"`);
         }
 
-        btnFilter.addEventListener("click", applyFilter);
-        filterInput.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") applyFilter();
-        });
+        btnFilterName.addEventListener("click", applyNameFilter);
+        filterName.addEventListener("keydown", e => { if (e.key === "Enter") applyNameFilter(); });
 
-        // ── merge (only checked files, in display order) ─────────────
+        // ── filter by extension ──────────────────────────────────────
+        function applyExtFilter() {
+            let q = filterExt.value.trim().toLowerCase();
+            if (!q) return;
+            if (!q.startsWith(".")) q = "." + q;
+            entries.forEach(e => {
+                e.checked = getExtension(e.file.name) === q;
+            });
+            renderList();
+            const matched = entries.filter(e => e.checked).length;
+            setStatus(`${matched} file(s) with "${q}" extension`);
+        }
+
+        btnFilterExt.addEventListener("click", applyExtFilter);
+        filterExt.addEventListener("keydown", e => { if (e.key === "Enter") applyExtFilter(); });
+
+        // ── merge ────────────────────────────────────────────────────
         btnMerge.addEventListener("click", async () => {
             const toMerge = getSortedEntries().filter(e => e.checked);
 
@@ -636,13 +742,11 @@
                     } catch (err) {
                         content = `[Error: could not read \u2014 ${err.message}]`;
                     }
-
                     parts.push(header + content);
                 }
 
                 const blob = new Blob(parts, { type: "text/plain;charset=utf-8" });
                 const url  = URL.createObjectURL(blob);
-
                 const a    = document.createElement("a");
                 a.href     = url;
                 a.download = filename;

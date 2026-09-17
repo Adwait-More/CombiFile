@@ -6,12 +6,22 @@ A minimal tool that merges multiple text files into one, separated by filename h
 
 Open [`index.html`](index.html) in any browser.
 
-1. **Add Files** — queue files (click multiple times to add more).
-2. **Sort** — reorder by name (A→Z / Z→A) or by extension.
-3. **Filter** — type a substring and click **Select** (or press Enter) to check only matching files.
-4. **Checkboxes** — toggle individual files on/off. Use **Check All** / **Uncheck All** for bulk control.
-5. **✕** — remove a file from the list entirely.
-6. **Merge** — combines only the checked files (in the current sort order) and downloads the result.
+### Sidebar Controls
+
+| Control | What it does |
+|---------|-------------|
+| **Add Files** | Queue files (click multiple times to add more) |
+| **Clear All** | Remove everything from the list |
+| **Sort** | Reorder by name (A→Z / Z→A) or by extension |
+| **Select by name** | Type a substring → checks only matching files |
+| **Select by extension** | Type an extension (e.g. `.cs`) → checks only files of that type |
+| **All / None / Invert** | Bulk selection controls |
+| **Merge & Download** | Combines checked files and downloads the result |
+
+### Main Area
+
+- Each file row has a **checkbox** (toggle include/exclude), an **extension badge**, and a **✕** button to remove it.
+- Merge output follows the current sort order.
 
 ## Output format
 
