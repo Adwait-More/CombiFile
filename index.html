@@ -19,14 +19,15 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            user-select: none;
         }
 
         .app {
             width: 480px;
-            background: #111111;
             padding: 14px;
         }
 
+        /* ── buttons ─────────────────────────────────────────────── */
         .btn-row {
             display: flex;
             gap: 8px;
@@ -49,36 +50,144 @@
             background: #2e2e2e;
         }
 
-        .btn-secondary {
+        .btn-dim {
             color: #777777;
         }
 
-        .btn-merge {
-            width: 100%;
+        .btn-full {
             flex: none;
+            width: 100%;
             margin-top: 10px;
         }
 
+        /* ── file list ───────────────────────────────────────────── */
         .file-list {
             width: 100%;
-            height: 200px;
+            height: 240px;
             background: #1a1a1a;
-            color: #777777;
             border: 1px solid #2a2a2a;
             border-radius: 4px;
-            padding: 8px 10px;
-            font-family: Consolas, 'Courier New', monospace;
-            font-size: 12px;
             overflow-y: auto;
             margin-bottom: 10px;
-            resize: none;
         }
 
-        .file-list:empty::before {
-            content: "No files selected";
+        .file-list-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #333333;
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 10px;
+            height: 30px;
+            border-bottom: 1px solid #1f1f1f;
+            transition: background 0.1s;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-item:hover {
+            background: #222222;
+        }
+
+        .file-item.unchecked .file-name {
             color: #444444;
+            text-decoration: line-through;
         }
 
+        /* checkbox */
+        .file-check {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            min-width: 14px;
+            background: #111111;
+            border: 1px solid #3a3a3a;
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .file-check:checked {
+            background: #444444;
+            border-color: #555555;
+        }
+
+        .file-check:checked::after {
+            content: "";
+            position: absolute;
+            left: 3px;
+            top: 0px;
+            width: 5px;
+            height: 9px;
+            border: solid #e0e0e0;
+            border-width: 0 1.5px 1.5px 0;
+            transform: rotate(40deg);
+        }
+
+        .file-name {
+            flex: 1;
+            font-family: Consolas, 'Courier New', monospace;
+            font-size: 12px;
+            color: #999999;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-remove {
+            background: none;
+            border: none;
+            color: #444444;
+            font-size: 15px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            flex: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px;
+            transition: color 0.15s, background 0.15s;
+        }
+
+        .file-remove:hover {
+            color: #999999;
+            background: #2a2a2a;
+        }
+
+        /* ── controls below list ─────────────────────────────────── */
+        .list-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .list-controls button {
+            height: 24px;
+            font-size: 11px;
+            color: #555555;
+            background: transparent;
+            border: 1px solid #2a2a2a;
+        }
+
+        .list-controls button:hover {
+            color: #999999;
+            background: #1a1a1a;
+        }
+
+        /* ── input ───────────────────────────────────────────────── */
         .field-label {
             font-size: 11px;
             color: #777777;
@@ -102,6 +211,7 @@
             border-color: #3a3a3a;
         }
 
+        /* ── status ──────────────────────────────────────────────── */
         .status {
             font-size: 11px;
             color: #777777;
@@ -110,20 +220,42 @@
             height: 16px;
         }
 
-        /* hide the native file input */
-        #file-input {
-            display: none;
+        /* ── scrollbar ───────────────────────────────────────────── */
+        .file-list::-webkit-scrollbar {
+            width: 6px;
         }
+
+        .file-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .file-list::-webkit-scrollbar-thumb {
+            background: #2a2a2a;
+            border-radius: 3px;
+        }
+
+        .file-list::-webkit-scrollbar-thumb:hover {
+            background: #3a3a3a;
+        }
+
+        #file-input { display: none; }
     </style>
 </head>
 <body>
     <div class="app">
         <div class="btn-row">
-            <button id="btn-select" type="button">Select Files</button>
-            <button id="btn-clear" type="button" class="btn-secondary">Clear List</button>
+            <button id="btn-add" type="button">Add Files</button>
+            <button id="btn-clear" type="button" class="btn-dim">Clear All</button>
         </div>
 
-        <div class="file-list" id="file-list"></div>
+        <div class="file-list" id="file-list">
+            <div class="file-list-empty" id="empty-msg">No files selected</div>
+        </div>
+
+        <div class="list-controls">
+            <button id="btn-check-all" type="button">Check All</button>
+            <button id="btn-uncheck-all" type="button">Uncheck All</button>
+        </div>
 
         <div class="field-label">Output filename</div>
         <input
@@ -134,25 +266,31 @@
             spellcheck="false"
         />
 
-        <button id="btn-merge" type="button" class="btn-merge">Merge</button>
-
+        <button id="btn-merge" type="button" class="btn-full">Merge</button>
         <div class="status" id="status">Ready</div>
 
         <input type="file" id="file-input" multiple />
     </div>
 
     <script>
-        const fileInput   = document.getElementById("file-input");
-        const fileListEl  = document.getElementById("file-list");
-        const filenameIn  = document.getElementById("filename-input");
-        const statusEl    = document.getElementById("status");
-        const btnSelect   = document.getElementById("btn-select");
-        const btnClear    = document.getElementById("btn-clear");
-        const btnMerge    = document.getElementById("btn-merge");
+        const fileInput  = document.getElementById("file-input");
+        const fileListEl = document.getElementById("file-list");
+        const emptyMsg   = document.getElementById("empty-msg");
+        const filenameIn = document.getElementById("filename-input");
+        const statusEl   = document.getElementById("status");
+        const btnAdd     = document.getElementById("btn-add");
+        const btnClear   = document.getElementById("btn-clear");
+        const btnMerge   = document.getElementById("btn-merge");
+        const btnCheckAll   = document.getElementById("btn-check-all");
+        const btnUncheckAll = document.getElementById("btn-uncheck-all");
 
-        /** @type {File[]} */
-        let selectedFiles = [];
-        let resetTimer    = null;
+        /**
+         * Each entry: { id, file: File, checked: boolean }
+         * Using a unique id per entry so we can remove by reference.
+         */
+        let entries  = [];
+        let nextId   = 0;
+        let resetTimer = null;
 
         // ── helpers ──────────────────────────────────────────────────
         function setStatus(text, autoReset = false) {
@@ -163,37 +301,107 @@
             }
         }
 
-        function refreshList() {
-            fileListEl.textContent = "";
-            selectedFiles.forEach(f => {
-                const line = document.createElement("div");
-                line.textContent = f.name;
-                fileListEl.appendChild(line);
+        function renderList() {
+            // remove all file-item elements (keep empty-msg)
+            fileListEl.querySelectorAll(".file-item").forEach(el => el.remove());
+
+            if (entries.length === 0) {
+                emptyMsg.style.display = "flex";
+                return;
+            }
+
+            emptyMsg.style.display = "none";
+
+            entries.forEach(entry => {
+                const row = document.createElement("div");
+                row.className = "file-item" + (entry.checked ? "" : " unchecked");
+                row.dataset.id = entry.id;
+
+                // checkbox
+                const cb = document.createElement("input");
+                cb.type = "checkbox";
+                cb.className = "file-check";
+                cb.checked = entry.checked;
+                cb.addEventListener("change", () => {
+                    entry.checked = cb.checked;
+                    row.classList.toggle("unchecked", !cb.checked);
+                    updateStatus();
+                });
+
+                // filename
+                const name = document.createElement("span");
+                name.className = "file-name";
+                name.textContent = entry.file.name;
+                name.title = entry.file.name;
+
+                // remove button
+                const rm = document.createElement("button");
+                rm.className = "file-remove";
+                rm.innerHTML = "&#x2715;";
+                rm.title = "Remove";
+                rm.addEventListener("click", () => {
+                    entries = entries.filter(e => e.id !== entry.id);
+                    renderList();
+                    updateStatus();
+                });
+
+                row.appendChild(cb);
+                row.appendChild(name);
+                row.appendChild(rm);
+                fileListEl.appendChild(row);
             });
         }
 
-        // ── select files ─────────────────────────────────────────────
-        btnSelect.addEventListener("click", () => fileInput.click());
+        function updateStatus() {
+            const checked = entries.filter(e => e.checked).length;
+            const total   = entries.length;
+            if (total === 0) {
+                setStatus("Ready");
+            } else {
+                setStatus(`${checked}/${total} file(s) checked`);
+            }
+        }
+
+        // ── add files (appends, doesn't replace) ─────────────────────
+        btnAdd.addEventListener("click", () => fileInput.click());
 
         fileInput.addEventListener("change", () => {
             if (fileInput.files.length === 0) return;
-            selectedFiles = Array.from(fileInput.files);
-            refreshList();
-            setStatus(`${selectedFiles.length} file(s) selected`);
-            fileInput.value = "";           // allow re-selecting same files
+            for (const f of fileInput.files) {
+                entries.push({ id: nextId++, file: f, checked: true });
+            }
+            renderList();
+            updateStatus();
+            fileInput.value = "";
         });
 
-        // ── clear list ───────────────────────────────────────────────
+        // ── clear all ────────────────────────────────────────────────
         btnClear.addEventListener("click", () => {
-            selectedFiles = [];
-            refreshList();
+            entries = [];
+            nextId  = 0;
+            renderList();
             setStatus("Ready");
         });
 
-        // ── merge ────────────────────────────────────────────────────
+        // ── check / uncheck all ──────────────────────────────────────
+        btnCheckAll.addEventListener("click", () => {
+            entries.forEach(e => e.checked = true);
+            renderList();
+            updateStatus();
+        });
+
+        btnUncheckAll.addEventListener("click", () => {
+            entries.forEach(e => e.checked = false);
+            renderList();
+            updateStatus();
+        });
+
+        // ── merge (only checked files) ───────────────────────────────
         btnMerge.addEventListener("click", async () => {
-            if (selectedFiles.length === 0) {
-                setStatus("Error: no files selected");
+            const toMerge = entries.filter(e => e.checked);
+
+            if (toMerge.length === 0) {
+                setStatus("Error: no files checked");
                 return;
             }
 
@@ -203,8 +411,8 @@
             try {
                 const parts = [];
 
-                for (let i = 0; i < selectedFiles.length; i++) {
-                    const file = selectedFiles[i];
+                for (let i = 0; i < toMerge.length; i++) {
+                    const file = toMerge[i].file;
                     const header = (i === 0)
                         ? `--- [${file.name}] ---\n\n`
                         : `\n\n--- [${file.name}] ---\n\n`;
@@ -213,7 +421,7 @@
                     try {
                         content = await file.text();
                     } catch (err) {
-                        content = `[Error: could not read — ${err.message}]`;
+                        content = `[Error: could not read \u2014 ${err.message}]`;
                     }
 
                     parts.push(header + content);
@@ -230,7 +438,7 @@
                 a.remove();
                 URL.revokeObjectURL(url);
 
-                setStatus(`Success! → ${filename}`, true);
+                setStatus(`Success! \u2192 ${filename}`, true);
             } catch (err) {
                 setStatus(`Error: ${err.message}`);
             }
