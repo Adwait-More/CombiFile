@@ -12,9 +12,9 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #111111;
-            color: #e0e0e0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0e0e0e;
+            color: #d4d4d4;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,52 +23,155 @@
         }
 
         .app {
-            width: 480px;
-            padding: 14px;
+            width: 580px;
+            background: #161616;
+            border: 1px solid #252525;
+            border-radius: 8px;
+            padding: 20px 22px;
+        }
+
+        .app-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #e8e8e8;
+            margin-bottom: 16px;
+            letter-spacing: 0.3px;
+        }
+
+        .app-title span {
+            color: #6b9cad;
         }
 
         /* ── buttons ─────────────────────────────────────────────── */
         .btn-row {
             display: flex;
             gap: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         button {
-            flex: 1;
-            height: 32px;
-            background: #222222;
-            color: #e0e0e0;
-            border: 1px solid #2a2a2a;
-            border-radius: 4px;
+            height: 34px;
+            background: #1e1e1e;
+            color: #c0c0c0;
+            border: 1px solid #2e2e2e;
+            border-radius: 5px;
             font-size: 13px;
+            font-family: inherit;
             cursor: pointer;
-            transition: background 0.15s;
+            transition: background 0.15s, border-color 0.15s;
+            padding: 0 14px;
         }
 
         button:hover {
-            background: #2e2e2e;
+            background: #282828;
+            border-color: #3a3a3a;
         }
 
+        .btn-grow { flex: 1; }
+
         .btn-dim {
-            color: #777777;
+            color: #666666;
+        }
+
+        .btn-accent {
+            background: #1a2a30;
+            border-color: #2d4a55;
+            color: #8ec3d4;
+        }
+
+        .btn-accent:hover {
+            background: #223840;
+            border-color: #3a6070;
         }
 
         .btn-full {
-            flex: none;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 12px;
+        }
+
+        /* ── toolbar (sort + filter) ─────────────────────────────── */
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .toolbar-label {
+            font-size: 11px;
+            color: #555555;
+            white-space: nowrap;
+        }
+
+        select {
+            height: 28px;
+            background: #1a1a1a;
+            color: #aaaaaa;
+            border: 1px solid #2e2e2e;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: inherit;
+            padding: 0 6px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        select:hover, select:focus {
+            border-color: #3a3a3a;
+        }
+
+        .filter-input {
+            height: 28px;
+            flex: 1;
+            background: #1a1a1a;
+            color: #cccccc;
+            border: 1px solid #2e2e2e;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: inherit;
+            padding: 0 8px;
+            outline: none;
+            min-width: 0;
+        }
+
+        .filter-input:focus {
+            border-color: #4a7a8a;
+        }
+
+        .filter-input::placeholder {
+            color: #444444;
+        }
+
+        .btn-filter {
+            height: 28px;
+            font-size: 11px;
+            padding: 0 10px;
+            color: #6b9cad;
+            background: #161e22;
+            border-color: #2a3a40;
+            white-space: nowrap;
+        }
+
+        .btn-filter:hover {
+            background: #1e2a30;
+            border-color: #3a5560;
         }
 
         /* ── file list ───────────────────────────────────────────── */
         .file-list {
             width: 100%;
-            height: 240px;
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 4px;
+            height: 280px;
+            background: #121212;
+            border: 1px solid #252525;
+            border-radius: 6px;
             overflow-y: auto;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .file-list-empty {
@@ -76,18 +179,18 @@
             align-items: center;
             justify-content: center;
             height: 100%;
-            color: #333333;
-            font-size: 12px;
+            color: #2a2a2a;
+            font-size: 13px;
             pointer-events: none;
         }
 
         .file-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 0 10px;
-            height: 30px;
-            border-bottom: 1px solid #1f1f1f;
+            gap: 10px;
+            padding: 0 12px;
+            height: 34px;
+            border-bottom: 1px solid #1a1a1a;
             transition: background 0.1s;
         }
 
@@ -96,11 +199,14 @@
         }
 
         .file-item:hover {
-            background: #222222;
+            background: #1a1e20;
+        }
+
+        .file-item.unchecked {
+            opacity: 0.4;
         }
 
         .file-item.unchecked .file-name {
-            color: #444444;
             text-decoration: line-through;
         }
 
@@ -108,30 +214,30 @@
         .file-check {
             appearance: none;
             -webkit-appearance: none;
-            width: 14px;
-            height: 14px;
-            min-width: 14px;
-            background: #111111;
+            width: 15px;
+            height: 15px;
+            min-width: 15px;
+            background: #0e0e0e;
             border: 1px solid #3a3a3a;
-            border-radius: 2px;
+            border-radius: 3px;
             cursor: pointer;
             position: relative;
             transition: background 0.15s, border-color 0.15s;
         }
 
         .file-check:checked {
-            background: #444444;
-            border-color: #555555;
+            background: #2a4a55;
+            border-color: #5a8a9a;
         }
 
         .file-check:checked::after {
             content: "";
             position: absolute;
-            left: 3px;
-            top: 0px;
+            left: 3.5px;
+            top: 0.5px;
             width: 5px;
             height: 9px;
-            border: solid #e0e0e0;
+            border: solid #c0dde6;
             border-width: 0 1.5px 1.5px 0;
             transform: rotate(40deg);
         }
@@ -139,39 +245,49 @@
         .file-name {
             flex: 1;
             font-family: Consolas, 'Courier New', monospace;
-            font-size: 12px;
-            color: #999999;
+            font-size: 12.5px;
+            color: #909090;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
+        .file-ext {
+            font-size: 10px;
+            color: #4a6a75;
+            background: #141e22;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-family: Consolas, monospace;
+        }
+
         .file-remove {
             background: none;
             border: none;
-            color: #444444;
-            font-size: 15px;
+            color: #333333;
+            font-size: 14px;
             cursor: pointer;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             flex: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 2px;
+            border-radius: 3px;
             transition: color 0.15s, background 0.15s;
+            padding: 0;
         }
 
         .file-remove:hover {
-            color: #999999;
-            background: #2a2a2a;
+            color: #aa5555;
+            background: #1e1618;
         }
 
-        /* ── controls below list ─────────────────────────────────── */
+        /* ── list controls ───────────────────────────────────────── */
         .list-controls {
             display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
+            gap: 6px;
+            margin-bottom: 14px;
         }
 
         .list-controls button {
@@ -179,45 +295,58 @@
             font-size: 11px;
             color: #555555;
             background: transparent;
-            border: 1px solid #2a2a2a;
+            border: 1px solid #252525;
+            padding: 0 10px;
         }
 
         .list-controls button:hover {
             color: #999999;
             background: #1a1a1a;
+            border-color: #333333;
         }
 
         /* ── input ───────────────────────────────────────────────── */
         .field-label {
             font-size: 11px;
-            color: #777777;
-            margin-bottom: 2px;
+            color: #666666;
+            margin-bottom: 3px;
             padding-left: 2px;
         }
 
         .filename-input {
             width: 100%;
-            height: 32px;
-            background: #1a1a1a;
-            color: #e0e0e0;
-            border: 1px solid #2a2a2a;
-            border-radius: 4px;
-            padding: 0 10px;
+            height: 34px;
+            background: #121212;
+            color: #d4d4d4;
+            border: 1px solid #252525;
+            border-radius: 5px;
+            padding: 0 12px;
             font-size: 13px;
+            font-family: inherit;
             outline: none;
+            transition: border-color 0.15s;
         }
 
         .filename-input:focus {
-            border-color: #3a3a3a;
+            border-color: #4a7a8a;
         }
 
         /* ── status ──────────────────────────────────────────────── */
         .status {
             font-size: 11px;
-            color: #777777;
-            margin-top: 6px;
+            color: #555555;
+            margin-top: 8px;
             padding-left: 2px;
             height: 16px;
+            transition: color 0.2s;
+        }
+
+        .status.success {
+            color: #6b9cad;
+        }
+
+        .status.error {
+            color: #aa6666;
         }
 
         /* ── scrollbar ───────────────────────────────────────────── */
@@ -230,12 +359,12 @@
         }
 
         .file-list::-webkit-scrollbar-thumb {
-            background: #2a2a2a;
+            background: #252525;
             border-radius: 3px;
         }
 
         .file-list::-webkit-scrollbar-thumb:hover {
-            background: #3a3a3a;
+            background: #353535;
         }
 
         #file-input { display: none; }
@@ -243,9 +372,32 @@
 </head>
 <body>
     <div class="app">
+        <div class="app-title">Combi<span>File</span></div>
+
         <div class="btn-row">
-            <button id="btn-add" type="button">Add Files</button>
-            <button id="btn-clear" type="button" class="btn-dim">Clear All</button>
+            <button id="btn-add" type="button" class="btn-grow">Add Files</button>
+            <button id="btn-clear" type="button" class="btn-grow btn-dim">Clear All</button>
+        </div>
+
+        <!-- toolbar: sort + filter -->
+        <div class="toolbar">
+            <div class="toolbar-group">
+                <span class="toolbar-label">Sort</span>
+                <select id="sort-select">
+                    <option value="none">As added</option>
+                    <option value="name-asc">Name A → Z</option>
+                    <option value="name-desc">Name Z → A</option>
+                    <option value="ext">Extension</option>
+                </select>
+            </div>
+            <input
+                type="text"
+                class="filter-input"
+                id="filter-input"
+                placeholder="Type to select matching files..."
+                spellcheck="false"
+            />
+            <button type="button" class="btn-filter" id="btn-filter-apply">Select</button>
         </div>
 
         <div class="file-list" id="file-list">
@@ -266,43 +418,72 @@
             spellcheck="false"
         />
 
-        <button id="btn-merge" type="button" class="btn-full">Merge</button>
+        <button id="btn-merge" type="button" class="btn-full btn-accent">Merge</button>
         <div class="status" id="status">Ready</div>
 
         <input type="file" id="file-input" multiple />
     </div>
 
     <script>
-        const fileInput  = document.getElementById("file-input");
-        const fileListEl = document.getElementById("file-list");
-        const emptyMsg   = document.getElementById("empty-msg");
-        const filenameIn = document.getElementById("filename-input");
-        const statusEl   = document.getElementById("status");
-        const btnAdd     = document.getElementById("btn-add");
-        const btnClear   = document.getElementById("btn-clear");
-        const btnMerge   = document.getElementById("btn-merge");
+        const fileInput     = document.getElementById("file-input");
+        const fileListEl    = document.getElementById("file-list");
+        const emptyMsg      = document.getElementById("empty-msg");
+        const filenameIn    = document.getElementById("filename-input");
+        const statusEl      = document.getElementById("status");
+        const btnAdd        = document.getElementById("btn-add");
+        const btnClear      = document.getElementById("btn-clear");
+        const btnMerge      = document.getElementById("btn-merge");
         const btnCheckAll   = document.getElementById("btn-check-all");
         const btnUncheckAll = document.getElementById("btn-uncheck-all");
+        const sortSelect    = document.getElementById("sort-select");
+        const filterInput   = document.getElementById("filter-input");
+        const btnFilter     = document.getElementById("btn-filter-apply");
 
         /**
          * Each entry: { id, file: File, checked: boolean }
-         * Using a unique id per entry so we can remove by reference.
          */
-        let entries  = [];
-        let nextId   = 0;
+        let entries    = [];
+        let nextId     = 0;
         let resetTimer = null;
 
         // ── helpers ──────────────────────────────────────────────────
-        function setStatus(text, autoReset = false) {
+
+        function getExtension(name) {
+            const dot = name.lastIndexOf(".");
+            return dot > 0 ? name.slice(dot).toLowerCase() : "";
+        }
+
+        function setStatus(text, type) {
             statusEl.textContent = text;
+            statusEl.className = "status" + (type ? " " + type : "");
             if (resetTimer) clearTimeout(resetTimer);
-            if (autoReset) {
-                resetTimer = setTimeout(() => { statusEl.textContent = "Ready"; }, 3000);
+            if (type === "success") {
+                resetTimer = setTimeout(() => {
+                    statusEl.textContent = "Ready";
+                    statusEl.className = "status";
+                }, 3000);
             }
         }
 
+        function getSortedEntries() {
+            const sorted = [...entries];
+            const mode = sortSelect.value;
+            if (mode === "name-asc") {
+                sorted.sort((a, b) => a.file.name.localeCompare(b.file.name));
+            } else if (mode === "name-desc") {
+                sorted.sort((a, b) => b.file.name.localeCompare(a.file.name));
+            } else if (mode === "ext") {
+                sorted.sort((a, b) => {
+                    const ea = getExtension(a.file.name);
+                    const eb = getExtension(b.file.name);
+                    if (ea !== eb) return ea.localeCompare(eb);
+                    return a.file.name.localeCompare(b.file.name);
+                });
+            }
+            return sorted;
+        }
+
         function renderList() {
-            // remove all file-item elements (keep empty-msg)
             fileListEl.querySelectorAll(".file-item").forEach(el => el.remove());
 
             if (entries.length === 0) {
@@ -311,11 +492,11 @@
             }
 
             emptyMsg.style.display = "none";
+            const sorted = getSortedEntries();
 
-            entries.forEach(entry => {
+            sorted.forEach(entry => {
                 const row = document.createElement("div");
                 row.className = "file-item" + (entry.checked ? "" : " unchecked");
-                row.dataset.id = entry.id;
 
                 // checkbox
                 const cb = document.createElement("input");
@@ -334,6 +515,12 @@
                 name.textContent = entry.file.name;
                 name.title = entry.file.name;
 
+                // extension badge
+                const ext = getExtension(entry.file.name);
+                const extBadge = document.createElement("span");
+                extBadge.className = "file-ext";
+                extBadge.textContent = ext || "—";
+
                 // remove button
                 const rm = document.createElement("button");
                 rm.className = "file-remove";
@@ -347,6 +534,7 @@
 
                 row.appendChild(cb);
                 row.appendChild(name);
+                row.appendChild(extBadge);
                 row.appendChild(rm);
                 fileListEl.appendChild(row);
             });
@@ -358,11 +546,11 @@
             if (total === 0) {
                 setStatus("Ready");
             } else {
-                setStatus(`${checked}/${total} file(s) checked`);
+                setStatus(`${checked} of ${total} file(s) checked`);
             }
         }
 
-        // ── add files (appends, doesn't replace) ─────────────────────
+        // ── add files (appends) ──────────────────────────────────────
         btnAdd.addEventListener("click", () => fileInput.click());
 
         fileInput.addEventListener("change", () => {
@@ -379,6 +567,7 @@
         btnClear.addEventListener("click", () => {
             entries = [];
             nextId  = 0;
+            filterInput.value = "";
             renderList();
             setStatus("Ready");
         });
@@ -396,12 +585,36 @@
             updateStatus();
         });
 
-        // ── merge (only checked files) ───────────────────────────────
+        // ── sort ─────────────────────────────────────────────────────
+        sortSelect.addEventListener("change", () => {
+            renderList();
+        });
+
+        // ── filter / select matching ─────────────────────────────────
+        function applyFilter() {
+            const query = filterInput.value.trim().toLowerCase();
+            if (!query) return;
+
+            entries.forEach(e => {
+                e.checked = e.file.name.toLowerCase().includes(query);
+            });
+            renderList();
+
+            const matched = entries.filter(e => e.checked).length;
+            setStatus(`Selected ${matched} file(s) matching "${filterInput.value.trim()}"`);
+        }
+
+        btnFilter.addEventListener("click", applyFilter);
+        filterInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") applyFilter();
+        });
+
+        // ── merge (only checked files, in display order) ─────────────
         btnMerge.addEventListener("click", async () => {
-            const toMerge = entries.filter(e => e.checked);
+            const toMerge = getSortedEntries().filter(e => e.checked);
 
             if (toMerge.length === 0) {
-                setStatus("Error: no files checked");
+                setStatus("No files checked", "error");
                 return;
             }
 
@@ -438,9 +651,9 @@
                 a.remove();
                 URL.revokeObjectURL(url);
 
-                setStatus(`Success! \u2192 ${filename}`, true);
+                setStatus(`Merged ${toMerge.length} files \u2192 ${filename}`, "success");
             } catch (err) {
-                setStatus(`Error: ${err.message}`);
+                setStatus(`Error: ${err.message}`, "error");
             }
         });
     </script>

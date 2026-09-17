@@ -1,18 +1,17 @@
 # CombiFile
 
-A brutally minimal tool that merges multiple text files into one, separated by filename headers.
+A minimal tool that merges multiple text files into one, separated by filename headers. Runs entirely in the browser — no install, no server.
 
 ## Usage
 
-Open [`index.html`](index.html) in any browser. No install, no server, no dependencies.
+Open [`index.html`](index.html) in any browser.
 
-1. Click **Add Files** to queue files (can be clicked multiple times to add more).
-2. Use **checkboxes** to include/exclude individual files from the merge.
-3. Use the **✕** button to remove a file from the list entirely.
-4. Set the output filename (default: `combined_output.txt`).
-5. Click **Merge** — only checked files are merged and downloaded.
-
-Everything runs client-side in the browser.
+1. **Add Files** — queue files (click multiple times to add more).
+2. **Sort** — reorder by name (A→Z / Z→A) or by extension.
+3. **Filter** — type a substring and click **Select** (or press Enter) to check only matching files.
+4. **Checkboxes** — toggle individual files on/off. Use **Check All** / **Uncheck All** for bulk control.
+5. **✕** — remove a file from the list entirely.
+6. **Merge** — combines only the checked files (in the current sort order) and downloads the result.
 
 ## Output format
 
