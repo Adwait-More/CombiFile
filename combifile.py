@@ -2,6 +2,9 @@
 CombiFile — Merge multiple text files into one.
 """
 
+import os
+from tkinter import filedialog
+
 import customtkinter as ctk
 
 
@@ -49,6 +52,7 @@ class CombiFileApp(ctk.CTk):
             font=ctk.CTkFont(size=13),
             height=32,
             corner_radius=4,
+            command=self._on_select_files,
         )
         self.btn_select.pack(fill="x", **pad)
 
@@ -113,6 +117,32 @@ class CombiFileApp(ctk.CTk):
             anchor="w",
         )
         self.lbl_status.pack(fill="x", padx=16, pady=(6, 10))
+
+    # ── file selection ────────────────────────────────────────────────
+    def _on_select_files(self) -> None:
+        """Open a multi-file dialog and store the paths."""
+        paths = filedialog.askopenfilenames(
+            title="Select text files",
+            filetypes=[("Text files", "*.txt *.md *.log *.csv *.json *.xml *.html *.py *.js *.ts *.css"), ("All files", "*.*")],
+        )
+        if not paths:
+            return
+
+        self._selected_files = list(paths)
+        self._refresh_file_list()
+        self._set_status(f"{len(self._selected_files)} file(s) selected")
+
+    def _refresh_file_list(self) -> None:
+        """Re-render the file list textbox."""
+        self.file_list.configure(state="normal")
+        self.file_list.delete("1.0", "end")
+        for path in self._selected_files:
+            self.file_list.insert("end", os.path.basename(path) + "\n")
+        self.file_list.configure(state="disabled")
+
+    def _set_status(self, text: str) -> None:
+        """Update the status label."""
+        self.lbl_status.configure(text=text)
 
 
 # ── entry point ───────────────────────────────────────────────────────
