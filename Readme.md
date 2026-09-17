@@ -2,9 +2,11 @@
 
 A minimal tool that merges multiple text files into one, separated by filename headers. Runs entirely in the browser — no install, no server.
 
+🔗 **[Live Demo](https://adwait-more.github.io/CombiFile/)**
+
 ## Usage
 
-Open [`index.html`](index.html) in any browser.
+Try the [live version](https://adwait-more.github.io/CombiFile/) or open [`index.html`](index.html) locally in any browser.
 
 ### Sidebar Controls
 
