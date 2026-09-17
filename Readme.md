@@ -1,19 +1,54 @@
 # CombiFile
 
-A brutally simple, minimalist GUI application to combine multiple text files into one. It takes your files, merges them, and separates the content using the original filenames.
+A brutally minimal tool that merges multiple text files into one, separated by filename headers.
 
-## Features
-* **Multi-File Selection:** Queue up as many text files as you need.
-* **Custom Output Naming:** Specify exactly what you want the merged file to be called.
-* **Automatic Headers:** Automatically inserts `--- filename.txt ---` before appending a file's content.
-* **Minimalist UI:** Dark, distraction-free interface that gets straight to the point.
+Two versions included — use whichever fits your setup.
 
-## Usage
-1. Launch the application.
-2. Click **Select Files** and highlight the text files you want to combine.
-3. Review the queued files in the list.
-4. Enter your desired output filename in the text box (e.g., `final_script.txt`).
-5. Click **Merge**, choose where to save the output, and you're done.
+---
 
-## License
-MIT
+## Web Version (no install needed)
+
+Open [`index.html`](index.html) in any modern browser. That's it.
+
+- Select files → set output name → click Merge → file downloads automatically.
+- Everything runs client-side. No server, no dependencies.
+
+---
+
+## Desktop Version (Python)
+
+### Install
+
+```bash
+pip install -r requirements.txt
+```
+
+### Run
+
+```bash
+python combifile.py
+```
+
+---
+
+## How it works
+
+1. Click **Select Files** to queue text files.
+2. Set the output filename (default: `combined_output.txt`).
+3. Click **Merge**.
+   - **Desktop:** prompts for an output folder, writes the file there.
+   - **Web:** downloads the merged file directly.
+4. Each file's content is written under a `--- [FILENAME] ---` header.
+
+## Output format
+
+```
+--- [first_file.txt] ---
+
+(contents of first_file.txt)
+
+
+--- [second_file.txt] ---
+
+(contents of second_file.txt)
+```
