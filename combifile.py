@@ -25,7 +25,7 @@ class CombiFileApp(ctk.CTk):
 
         # ── window ────────────────────────────────────────────────────
         self.title("CombiFile")
-        self.geometry("480x420")
+        self.geometry("480x450")
         self.resizable(False, False)
         self.configure(fg_color=self.BG)
 
@@ -40,9 +40,12 @@ class CombiFileApp(ctk.CTk):
     def _build_ui(self) -> None:
         pad = {"padx": 14, "pady": (8, 0)}
 
-        # — select files button ----------------------------------------
+        # — button row (Select Files + Clear List) ———————————————————
+        btn_row = ctk.CTkFrame(self, fg_color="transparent")
+        btn_row.pack(fill="x", **pad)
+
         self.btn_select = ctk.CTkButton(
-            self,
+            btn_row,
             text="Select Files",
             fg_color=self.BTN_BG,
             hover_color=self.BTN_HOVER,
@@ -54,7 +57,22 @@ class CombiFileApp(ctk.CTk):
             corner_radius=4,
             command=self._on_select_files,
         )
-        self.btn_select.pack(fill="x", **pad)
+        self.btn_select.pack(side="left", fill="x", expand=True, padx=(0, 4))
+
+        self.btn_clear = ctk.CTkButton(
+            btn_row,
+            text="Clear List",
+            fg_color=self.BTN_BG,
+            hover_color=self.BTN_HOVER,
+            border_color=self.BORDER,
+            border_width=1,
+            text_color=self.TEXT_DIM,
+            font=ctk.CTkFont(size=13),
+            height=32,
+            corner_radius=4,
+            command=self._on_clear_list,
+        )
+        self.btn_clear.pack(side="left", fill="x", expand=True, padx=(4, 0))
 
         # — file list ---------------------------------------------------
         self.file_list = ctk.CTkTextbox(
@@ -141,9 +159,17 @@ class CombiFileApp(ctk.CTk):
             self.file_list.insert("end", os.path.basename(path) + "\n")
         self.file_list.configure(state="disabled")
 
-    def _set_status(self, text: str) -> None:
-        """Update the status label."""
+    def _set_status(self, text: str, auto_reset: bool = False) -> None:
+        """Update the status label. Optionally reset to 'Ready' after 3 s."""
         self.lbl_status.configure(text=text)
+        if auto_reset:
+            self.after(3000, lambda: self.lbl_status.configure(text="Ready"))
+
+    def _on_clear_list(self) -> None:
+        """Remove all queued files."""
+        self._selected_files.clear()
+        self._refresh_file_list()
+        self._set_status("Ready")
 
     # ── merge logic ───────────────────────────────────────────────────
     def _on_merge(self) -> None:
@@ -190,7 +216,7 @@ class CombiFileApp(ctk.CTk):
             self._set_status(f"Error: {exc}")
             return
 
-        self._set_status(f"Success! → {filename}")
+        self._set_status(f"Success! \u2192 {filename}", auto_reset=True)
 
 
 # ── entry point ───────────────────────────────────────────────────────
