@@ -105,6 +105,7 @@ class CombiFileApp(ctk.CTk):
             font=ctk.CTkFont(size=13),
             height=32,
             corner_radius=4,
+            command=self._on_merge,
         )
         self.btn_merge.pack(fill="x", padx=14, pady=(10, 0))
 
@@ -143,6 +144,53 @@ class CombiFileApp(ctk.CTk):
     def _set_status(self, text: str) -> None:
         """Update the status label."""
         self.lbl_status.configure(text=text)
+
+    # ── merge logic ───────────────────────────────────────────────────
+    def _on_merge(self) -> None:
+        """Validate, ask for output folder, and merge all files."""
+        # guard: no files selected
+        if not self._selected_files:
+            self._set_status("Error: no files selected")
+            return
+
+        # get output filename
+        filename = self.entry_filename.get().strip()
+        if not filename:
+            filename = "combined_output.txt"
+
+        # ask for output directory
+        out_dir = filedialog.askdirectory(title="Choose output folder")
+        if not out_dir:
+            return
+
+        out_path = os.path.join(out_dir, filename)
+
+        self._set_status("Merging...")
+        self.update_idletasks()  # force UI redraw
+
+        try:
+            with open(out_path, "w", encoding="utf-8") as out_f:
+                for i, filepath in enumerate(self._selected_files):
+                    name = os.path.basename(filepath)
+                    header = f"\n\n--- [{name}] ---\n\n"
+                    # skip leading blank lines for the very first file
+                    if i == 0:
+                        header = header.lstrip("\n")
+                    out_f.write(header)
+                    try:
+                        with open(filepath, "r", encoding="utf-8") as in_f:
+                            out_f.write(in_f.read())
+                    except PermissionError:
+                        out_f.write(f"[Error: could not read — file is locked]")
+                    except UnicodeDecodeError:
+                        out_f.write(f"[Error: file is not valid UTF-8 text]")
+                    except OSError as exc:
+                        out_f.write(f"[Error: {exc}]")
+        except OSError as exc:
+            self._set_status(f"Error: {exc}")
+            return
+
+        self._set_status(f"Success! → {filename}")
 
 
 # ── entry point ───────────────────────────────────────────────────────
