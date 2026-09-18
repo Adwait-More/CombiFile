@@ -195,6 +195,38 @@
             flex-direction: column;
             height: 100vh;
             min-width: 0;
+            position: relative;
+        }
+
+        /* drag and drop overlay */
+        .drop-zone {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.9);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #8ec3d4;
+            border: 2px dashed #2a4a56;
+            margin: 10px;
+            border-radius: 8px;
+            pointer-events: none; /* crucial so it doesn't block dragleave */
+        }
+
+        .drop-zone.active {
+            display: flex;
+        }
+        
+        .drop-zone-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .drop-zone-text {
+            font-size: 20px;
+            font-weight: 600;
         }
 
         /* ── header bar ──────────────────────────────────────────── */
@@ -243,6 +275,7 @@
             letter-spacing: 0.8px;
         }
 
+        .lh-reorder { width: 14px; margin-right: 4px; }
         .lh-check { width: 20px; }
         .lh-name  { flex: 1; }
         .lh-ext   { width: 70px; text-align: center; }
@@ -292,6 +325,34 @@
 
         .file-item.unchecked .file-name {
             text-decoration: line-through;
+        }
+
+        /* up / down reorder buttons */
+        .file-reorder {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            width: 14px;
+            margin-right: 4px;
+        }
+        
+        .file-reorder button {
+            background: none;
+            border: none;
+            color: #555;
+            font-size: 10px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 2px 0;
+        }
+        
+        .file-reorder button:hover {
+            color: #fff;
+        }
+        
+        .file-reorder button:disabled {
+            color: #222;
+            cursor: default;
         }
 
         /* checkbox */
@@ -418,6 +479,7 @@
         }
 
         #file-input { display: none; }
+        #folder-input { display: none; }
     </style>
 </head>
 <body>
@@ -429,8 +491,11 @@
         <div class="sidebar-section">
             <div class="sidebar-label">Files</div>
         </div>
-        <button id="btn-add" type="button">+ Add Files</button>
-        <button id="btn-clear" type="button" class="btn-dim">Clear All</button>
+        <div class="sidebar-btn-row">
+            <button id="btn-add" type="button">+ Add Files</button>
+            <button id="btn-add-folder" type="button">+ Add Folder</button>
+        </div>
+        <button id="btn-clear" type="button" class="btn-dim" style="margin-top: 6px;">Clear All</button>
 
         <div class="sidebar-divider"></div>
 
@@ -438,7 +503,7 @@
             <div class="sidebar-label">Sort</div>
         </div>
         <select id="sort-select" class="s-select">
-            <option value="none">As added</option>
+            <option value="none">As added / Custom</option>
             <option value="name-asc">Name A → Z</option>
             <option value="name-desc">Name Z → A</option>
             <option value="ext">Extension</option>
@@ -478,7 +543,19 @@
         <div class="sidebar-divider"></div>
 
         <div class="sidebar-section">
-            <div class="sidebar-label">Output</div>
+            <div class="sidebar-label">Separator</div>
+        </div>
+        <input
+            type="text"
+            class="s-input"
+            id="separator-input"
+            value="--- [{name}] ---"
+            spellcheck="false"
+            title="Use {name} for filename"
+        />
+
+        <div class="sidebar-section">
+            <div class="sidebar-label">Output Filename</div>
         </div>
         <input
             type="text"
@@ -487,17 +564,26 @@
             value="combined_output.txt"
             spellcheck="false"
         />
-        <button id="btn-merge" type="button" class="btn-accent">Merge & Download</button>
+        <div class="sidebar-btn-row" style="margin-top: 8px;">
+            <button id="btn-copy" type="button" class="btn-accent">Copy</button>
+            <button id="btn-merge" type="button" class="btn-accent">Download</button>
+        </div>
     </aside>
 
     <!-- ═══ MAIN ═══ -->
-    <main class="main">
+    <main class="main" id="main-area">
+        <div class="drop-zone" id="drop-zone">
+            <div class="drop-zone-icon">📥</div>
+            <div class="drop-zone-text">Drop files or folders here</div>
+        </div>
+        
         <div class="main-header">
             <div class="main-header-title"><b>Files</b> — queued for merging</div>
             <div class="main-header-count" id="header-count"></div>
         </div>
 
         <div class="list-header">
+            <span class="lh-reorder"></span>
             <span class="lh-check"></span>
             <span class="lh-name">Filename</span>
             <span class="lh-ext">Type</span>
@@ -507,7 +593,7 @@
         <div class="file-list" id="file-list">
             <div class="file-list-empty" id="empty-msg">
                 No files added yet
-                <div class="file-list-empty-sub">Click "Add Files" in the sidebar to get started</div>
+                <div class="file-list-empty-sub">Click "Add Files" or drag & drop files here</div>
             </div>
         </div>
 
@@ -518,21 +604,29 @@
     </main>
 
     <input type="file" id="file-input" multiple />
+    <input type="file" id="folder-input" webkitdirectory directory multiple />
 
     <script>
         const fileInput     = document.getElementById("file-input");
+        const folderInput   = document.getElementById("folder-input");
         const fileListEl    = document.getElementById("file-list");
         const emptyMsg      = document.getElementById("empty-msg");
         const filenameIn    = document.getElementById("filename-input");
+        const separatorIn   = document.getElementById("separator-input");
         const statusEl      = document.getElementById("status");
         const statusInfoEl  = document.getElementById("status-info");
         const headerCountEl = document.getElementById("header-count");
+        
         const btnAdd        = document.getElementById("btn-add");
+        const btnAddFolder  = document.getElementById("btn-add-folder");
         const btnClear      = document.getElementById("btn-clear");
         const btnMerge      = document.getElementById("btn-merge");
+        const btnCopy       = document.getElementById("btn-copy");
+        
         const btnCheckAll   = document.getElementById("btn-check-all");
         const btnUncheckAll = document.getElementById("btn-uncheck-all");
         const btnInvert     = document.getElementById("btn-invert");
+        
         const sortSelect    = document.getElementById("sort-select");
         const filterName    = document.getElementById("filter-name");
         const btnFilterName = document.getElementById("btn-filter-name");
@@ -585,6 +679,20 @@
             }
             return sorted;
         }
+        
+        function moveEntry(id, direction) {
+            if (sortSelect.value !== "none") {
+                entries = getSortedEntries();
+                sortSelect.value = "none";
+            }
+            const idx = entries.findIndex(e => e.id === id);
+            if (direction === -1 && idx > 0) {
+                [entries[idx], entries[idx-1]] = [entries[idx-1], entries[idx]];
+            } else if (direction === 1 && idx < entries.length - 1) {
+                [entries[idx], entries[idx+1]] = [entries[idx+1], entries[idx]];
+            }
+            renderList();
+        }
 
         function renderList() {
             fileListEl.querySelectorAll(".file-item").forEach(el => el.remove());
@@ -598,9 +706,25 @@
             emptyMsg.style.display = "none";
             const sorted = getSortedEntries();
 
-            sorted.forEach(entry => {
+            sorted.forEach((entry, i) => {
                 const row = document.createElement("div");
                 row.className = "file-item" + (entry.checked ? "" : " unchecked");
+                
+                // reorder buttons
+                const reorder = document.createElement("div");
+                reorder.className = "file-reorder";
+                const btnUp = document.createElement("button");
+                btnUp.innerHTML = "▲";
+                btnUp.disabled = i === 0;
+                btnUp.addEventListener("click", () => moveEntry(entry.id, -1));
+                
+                const btnDown = document.createElement("button");
+                btnDown.innerHTML = "▼";
+                btnDown.disabled = i === sorted.length - 1;
+                btnDown.addEventListener("click", () => moveEntry(entry.id, 1));
+                
+                reorder.appendChild(btnUp);
+                reorder.appendChild(btnDown);
 
                 const cb = document.createElement("input");
                 cb.type = "checkbox";
@@ -614,8 +738,8 @@
 
                 const name = document.createElement("span");
                 name.className = "file-name";
-                name.textContent = entry.file.name;
-                name.title = entry.file.name;
+                name.textContent = entry.file.webkitRelativePath || entry.file.name;
+                name.title = entry.file.webkitRelativePath || entry.file.name;
 
                 const ext = getExtension(entry.file.name);
                 const extBadge = document.createElement("span");
@@ -631,6 +755,7 @@
                     renderList();
                 });
 
+                row.appendChild(reorder);
                 row.appendChild(cb);
                 row.appendChild(name);
                 row.appendChild(extBadge);
@@ -641,18 +766,97 @@
             updateCounts();
         }
 
-        // ── add files ────────────────────────────────────────────────
+        // ── add files / folders ──────────────────────────────────────
         btnAdd.addEventListener("click", () => fileInput.click());
+        btnAddFolder.addEventListener("click", () => folderInput.click());
 
-        fileInput.addEventListener("change", () => {
-            if (fileInput.files.length === 0) return;
-            for (const f of fileInput.files) {
+        function handleInputFiles(files) {
+            if (files.length === 0) return;
+            for (const f of files) {
                 entries.push({ id: nextId++, file: f, checked: true });
             }
             renderList();
-            setStatus(`Added ${fileInput.files.length} file(s)`);
+            setStatus(`Added ${files.length} file(s)`, "success");
+        }
+
+        fileInput.addEventListener("change", () => {
+            handleInputFiles(fileInput.files);
             fileInput.value = "";
         });
+
+        folderInput.addEventListener("change", () => {
+            handleInputFiles(folderInput.files);
+            folderInput.value = "";
+        });
+
+        // ── drag and drop ────────────────────────────────────────────
+        const dropZone = document.getElementById("drop-zone");
+        let dragCounter = 0;
+
+        document.body.addEventListener("dragenter", e => {
+            e.preventDefault();
+            dragCounter++;
+            dropZone.classList.add("active");
+        });
+        
+        document.body.addEventListener("dragleave", e => {
+            dragCounter--;
+            if (dragCounter === 0) {
+                dropZone.classList.remove("active");
+            }
+        });
+        
+        document.body.addEventListener("dragover", e => {
+            e.preventDefault();
+        });
+
+        document.body.addEventListener("drop", e => {
+            e.preventDefault();
+            dragCounter = 0;
+            dropZone.classList.remove("active");
+
+            if (e.dataTransfer.items) {
+                const items = Array.from(e.dataTransfer.items);
+                let promises = [];
+                
+                const processEntry = (entry) => {
+                    return new Promise((resolve) => {
+                        if (entry.isFile) {
+                            entry.file(f => {
+                                entries.push({ id: nextId++, file: f, checked: true });
+                                resolve();
+                            });
+                        } else if (entry.isDirectory) {
+                            const dirReader = entry.createReader();
+                            dirReader.readEntries(async dirEntries => {
+                                const p = [];
+                                for (let i=0; i<dirEntries.length; i++) {
+                                    p.push(processEntry(dirEntries[i]));
+                                }
+                                await Promise.all(p);
+                                resolve();
+                            });
+                        } else {
+                            resolve();
+                        }
+                    });
+                };
+                
+                const allP = items.map(item => {
+                    const entry = item.webkitGetAsEntry();
+                    if (entry) return processEntry(entry);
+                    return Promise.resolve();
+                });
+                
+                Promise.all(allP).then(() => {
+                    renderList();
+                    setStatus("Files added via drag & drop", "success");
+                });
+            } else {
+                handleInputFiles(e.dataTransfer.files);
+            }
+        });
+
 
         // ── clear ────────────────────────────────────────────────────
         btnClear.addEventListener("click", () => {
@@ -715,37 +919,64 @@
         btnFilterExt.addEventListener("click", applyExtFilter);
         filterExt.addEventListener("keydown", e => { if (e.key === "Enter") applyExtFilter(); });
 
-        // ── merge ────────────────────────────────────────────────────
-        btnMerge.addEventListener("click", async () => {
+        // ── generate output ──────────────────────────────────────────
+        async function generateOutput() {
             const toMerge = getSortedEntries().filter(e => e.checked);
-
             if (toMerge.length === 0) {
                 setStatus("No files checked", "error");
-                return;
+                return null;
             }
 
-            const filename = filenameIn.value.trim() || "combined_output.txt";
-            setStatus("Merging...");
+            const sepPattern = separatorIn.value;
+            const parts = [];
 
-            try {
-                const parts = [];
-
-                for (let i = 0; i < toMerge.length; i++) {
-                    const file = toMerge[i].file;
-                    const header = (i === 0)
-                        ? `--- [${file.name}] ---\n\n`
-                        : `\n\n--- [${file.name}] ---\n\n`;
-
-                    let content;
-                    try {
-                        content = await file.text();
-                    } catch (err) {
-                        content = `[Error: could not read \u2014 ${err.message}]`;
-                    }
-                    parts.push(header + content);
+            for (let i = 0; i < toMerge.length; i++) {
+                const file = toMerge[i].file;
+                const relPath = file.webkitRelativePath || file.name;
+                
+                let header = sepPattern ? sepPattern.replace("{name}", relPath) : "";
+                if (header) {
+                    header = (i === 0) ? `${header}\n\n` : `\n\n${header}\n\n`;
+                } else {
+                    header = (i === 0) ? "" : "\n";
                 }
 
-                const blob = new Blob(parts, { type: "text/plain;charset=utf-8" });
+                let content;
+                try {
+                    content = await file.text();
+                } catch (err) {
+                    content = `[Error: could not read \u2014 ${err.message}]`;
+                }
+                parts.push(header + content);
+            }
+            return { parts, count: toMerge.length };
+        }
+
+        // ── copy ─────────────────────────────────────────────────────
+        btnCopy.addEventListener("click", async () => {
+            setStatus("Generating output...");
+            const result = await generateOutput();
+            if (!result) return;
+            
+            try {
+                const blob = new Blob(result.parts, { type: "text/plain;charset=utf-8" });
+                const text = await blob.text();
+                await navigator.clipboard.writeText(text);
+                setStatus(`Copied ${result.count} files to clipboard`, "success");
+            } catch(e) {
+                setStatus(`Clipboard error: ${e.message}`, "error");
+            }
+        });
+
+        // ── merge & download ─────────────────────────────────────────
+        btnMerge.addEventListener("click", async () => {
+             const filename = filenameIn.value.trim() || "combined_output.txt";
+             setStatus("Generating output...");
+             const result = await generateOutput();
+             if (!result) return;
+
+             try {
+                const blob = new Blob(result.parts, { type: "text/plain;charset=utf-8" });
                 const url  = URL.createObjectURL(blob);
                 const a    = document.createElement("a");
                 a.href     = url;
@@ -755,10 +986,10 @@
                 a.remove();
                 URL.revokeObjectURL(url);
 
-                setStatus(`Merged ${toMerge.length} files \u2192 ${filename}`, "success");
-            } catch (err) {
-                setStatus(`Error: ${err.message}`, "error");
-            }
+                setStatus(`Merged ${result.count} files \u2192 ${filename}`, "success");
+             } catch(e) {
+                setStatus(`Error: ${e.message}`, "error");
+             }
         });
     </script>
 </body>
