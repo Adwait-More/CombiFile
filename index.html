@@ -679,6 +679,17 @@
             }
             return sorted;
         }
+
+        function isBinaryFile(file) {
+            if (file.type.startsWith("image/") || 
+                file.type.startsWith("video/") || 
+                file.type.startsWith("audio/")) {
+                return true;
+            }
+            const binaryExts = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".bmp", ".pdf", ".zip", ".tar", ".gz", ".rar", ".7z", ".exe", ".dll", ".so", ".dylib", ".mp4", ".mp3", ".wav"];
+            const ext = getExtension(file.name);
+            return binaryExts.includes(ext);
+        }
         
         function moveEntry(id, direction) {
             if (sortSelect.value !== "none") {
@@ -772,11 +783,22 @@
 
         function handleInputFiles(files) {
             if (files.length === 0) return;
+            let added = 0;
+            let skipped = 0;
             for (const f of files) {
+                if (isBinaryFile(f)) {
+                    skipped++;
+                    continue;
+                }
                 entries.push({ id: nextId++, file: f, checked: true });
+                added++;
             }
             renderList();
-            setStatus(`Added ${files.length} file(s)`, "success");
+            if (skipped > 0) {
+                setStatus(`Added ${added} file(s) (Skipped ${skipped} binary/image files)`, "success");
+            } else {
+                setStatus(`Added ${added} file(s)`, "success");
+            }
         }
 
         fileInput.addEventListener("change", () => {
@@ -817,13 +839,19 @@
 
             if (e.dataTransfer.items) {
                 const items = Array.from(e.dataTransfer.items);
-                let promises = [];
-                
+                let added = 0;
+                let skipped = 0;
+
                 const processEntry = (entry) => {
                     return new Promise((resolve) => {
                         if (entry.isFile) {
                             entry.file(f => {
-                                entries.push({ id: nextId++, file: f, checked: true });
+                                if (isBinaryFile(f)) {
+                                    skipped++;
+                                } else {
+                                    entries.push({ id: nextId++, file: f, checked: true });
+                                    added++;
+                                }
                                 resolve();
                             });
                         } else if (entry.isDirectory) {
@@ -850,7 +878,11 @@
                 
                 Promise.all(allP).then(() => {
                     renderList();
-                    setStatus("Files added via drag & drop", "success");
+                    if (skipped > 0) {
+                        setStatus(`Added ${added} file(s) (Skipped ${skipped} binary/image files)`, "success");
+                    } else {
+                        setStatus(`Added ${added} file(s) via drag & drop`, "success");
+                    }
                 });
             } else {
                 handleInputFiles(e.dataTransfer.files);
