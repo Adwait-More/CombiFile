@@ -538,9 +538,19 @@
             <button id="btn-invert" type="button">Invert</button>
         </div>
 
+        <button id="btn-copy-list" type="button" class="btn-dim" style="margin-top: 6px;">Copy List</button>
+
         <div class="sidebar-spacer"></div>
 
         <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-label">Options</div>
+        </div>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #b0b0b0; cursor: pointer; margin-bottom: 12px;">
+            <input type="checkbox" id="cb-remove-empty" class="file-check" style="margin: 0;">
+            Remove empty lines
+        </label>
 
         <div class="sidebar-section">
             <div class="sidebar-label">Separator</div>
@@ -622,6 +632,8 @@
         const btnClear      = document.getElementById("btn-clear");
         const btnMerge      = document.getElementById("btn-merge");
         const btnCopy       = document.getElementById("btn-copy");
+        const btnCopyList   = document.getElementById("btn-copy-list");
+        const cbRemoveEmpty = document.getElementById("cb-remove-empty");
         
         const btnCheckAll   = document.getElementById("btn-check-all");
         const btnUncheckAll = document.getElementById("btn-uncheck-all");
@@ -636,6 +648,20 @@
         let entries    = [];
         let nextId     = 0;
         let resetTimer = null;
+
+        // ── load settings ────────────────────────────────────────────
+        if (localStorage.getItem("combiSort")) sortSelect.value = localStorage.getItem("combiSort");
+        if (localStorage.getItem("combiSeparator") !== null) separatorIn.value = localStorage.getItem("combiSeparator");
+        if (localStorage.getItem("combiFilename") !== null) filenameIn.value = localStorage.getItem("combiFilename");
+        if (localStorage.getItem("combiRemoveEmpty") === "true") cbRemoveEmpty.checked = true;
+
+        sortSelect.addEventListener("change", () => {
+            localStorage.setItem("combiSort", sortSelect.value);
+            renderList();
+        });
+        separatorIn.addEventListener("input", () => localStorage.setItem("combiSeparator", separatorIn.value));
+        filenameIn.addEventListener("input", () => localStorage.setItem("combiFilename", filenameIn.value));
+        cbRemoveEmpty.addEventListener("change", () => localStorage.setItem("combiRemoveEmpty", cbRemoveEmpty.checked));
 
         // ── helpers ──────────────────────────────────────────────────
         function getExtension(name) {
@@ -976,6 +1002,9 @@
                 let content;
                 try {
                     content = await file.text();
+                    if (cbRemoveEmpty.checked) {
+                        content = content.split(/\r?\n/).filter(line => line.trim() !== "").join("\n");
+                    }
                 } catch (err) {
                     content = `[Error: could not read \u2014 ${err.message}]`;
                 }
@@ -995,6 +1024,21 @@
                 const text = await blob.text();
                 await navigator.clipboard.writeText(text);
                 setStatus(`Copied ${result.count} files to clipboard`, "success");
+            } catch(e) {
+                setStatus(`Clipboard error: ${e.message}`, "error");
+            }
+        });
+
+        btnCopyList.addEventListener("click", async () => {
+            const toMerge = getSortedEntries().filter(e => e.checked);
+            if (toMerge.length === 0) {
+                setStatus("No files checked", "error");
+                return;
+            }
+            const list = toMerge.map(e => e.file.webkitRelativePath || e.file.name).join('\n');
+            try {
+                await navigator.clipboard.writeText(list);
+                setStatus(`Copied ${toMerge.length} file paths to clipboard`, "success");
             } catch(e) {
                 setStatus(`Clipboard error: ${e.message}`, "error");
             }
